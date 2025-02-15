@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="/static/css/output.css" rel="stylesheet">
+    <title>User Management</title>
+</head>
+
+<body class="bg-gray-100">
+    <div class="max-w-4xl p-6 mx-auto bg-white rounded-md shadow-md mt-8">
+        <h2 class="text-lg font-semibold text-gray-700 capitalize">User Management</h1>
+
+            <!-- Add User Form -->
+            <form action="/add" method="POST">
+                <div class="grid grid-cols-1 gap-6 mt-4 sm:grid-cols-2">
+                    <div>
+                        <label for="name" class="text-gray-700">Name</label>
+                        <input type="text" id="name" name="name"
+                            class="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-200 rounded-md focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 focus:outline-none focus:ring"
+                            required>
+                    </div>
+                    <div>
+                        <label for="contact" class="text-gray-700">Contact</label>
+                        <input type="text" id="contact" name="contact"
+                            class="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-200 rounded-md focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 focus:outline-none focus:ring"
+                            required>
+                    </div>
+                    <div>
+                        <label for="start_date" class="text-gray-700">Start Date</label>
+                        <input type="date" id="start_date" name="start_date"
+                            class="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-200 rounded-md focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 focus:outline-none focus:ring"
+                            required>
+                    </div>
+                    <div>
+                        <label for="end_date" class="text-gray-700">End Date</label>
+                        <input type="date" id="end_date" name="end_date"
+                            class="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-200 rounded-md focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 focus:outline-none focus:ring"
+                            required>
+                    </div>
+                    <div>
+                        <label for="amount" class="text-gray-700">Amount (₹)</label>
+                        <input type="number" id="amount" name="amount"
+                            class="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-200 rounded-md focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 focus:outline-none focus:ring"
+                            required>
+                    </div>
+                    <div>
+                        <label for="description" class="text-gray-700">Description</label>
+                        <textarea id="description" name="description" rows="3"
+                            class="w-full border border-gray-300 rounded p-2 focus:outline-none focus:border-blue-500"></textarea>
+                    </div>
+                </div>
+                <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Add
+                    User</button>
+            </form>
+            <a href="/export_csv" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Download
+                User</a>
+            <div class="flex justify-end my-4">
+                <button id="analyzeBtn" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700">
+                    Analyze
+                </button>
+            </div>
+
+            <!-- User List -->
+            <div class="bg-white shadow-md rounded p-6">
+                <h2 class="text-sm font-semibold mb-4">User List</h2>
+                <table class="table-auto w-full border-collapse border border-gray-300">
+                    <thead>
+                        <tr class="bg-gray-100">
+                            <th class="border text-sm border-gray-300 px-4 py-2">ID</th>
+                            <th class="border text-sm border-gray-300 px-4 py-2">Name</th>
+                            <th class="border text-sm border-gray-300 px-4 py-2">Contact</th>
+                            <th class="border text-sm border-gray-300 px-4 py-2">Start Date</th>
+                            <th class="border text-sm border-gray-300 px-4 py-2">End Date</th>
+                            <th class="border text-sm border-gray-300 px-4 py-2">Amount</th>
+                            <th class="border text-sm border-gray-300 px-4 py-2">Description</th>
+                            <th class="border text-sm border-gray-300 px-4 py-2">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in users %}
+                        <tr>
+                            <td class="border text-sm border-gray-300 px-4 py-2">{{ user[0] }}</td>
+                            <td class="border text-sm border-gray-300 px-4 py-2">{{ user[1] }}</td>
+                            <td class="border text-sm border-gray-300 px-4 py-2">{{ user[2] }}</td>
+                            <td class="border text-sm border-gray-300 px-4 py-2">{{ user[3] }}</td>
+                            <td class="border text-sm border-gray-300 px-4 py-2">{{ user[4] }}</td>
+                            <td class="border text-sm border-gray-300 px-4 py-2">₹{{ user[5] }}</td>
+                            <td class="border text-sm border-gray-300 px-4 py-2">{{ user[6] }}</td>
+                            <td class="border text-sm border-gray-300 px-4 py-2">
+                                <form action="/delete/{{ user[0] }}" method="POST">
+                                    <button type="submit"
+                                        class="bg-red-500 text-white px-4 py-2 rounded">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+
+            <!-- Analysis Results -->
+            <div id="analysisResults" class="hidden bg-gray-100 p-4 mt-4 border rounded">
+                <h2 class="text-lg font-semibold">Analysis Results</h2>
+
+                <div class="mt-4">
+                    <h3 class="text-md font-medium">Peak Sales Periods</h3>
+                    <canvas id="peakSalesChart"></canvas>
+                </div>
+
+                <div class="mt-8">
+                    <h3 class="text-md font-medium">User Onboarding Trends</h3>
+                    <canvas id="onboardingTrendsChart"></canvas>
+                </div>
+            </div>
+    </div>
+    <!-- Include the JavaScript -->
+    <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>y
+</body>
+
+</html>
